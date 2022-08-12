@@ -37,10 +37,38 @@ const MORSE_TABLE = {
     '-----':  '0',
 };
 
-function decode(expr) {
-    // write your solution here
+const fakeBinary = {
+    '10': '.',
+    '11': '-',
 }
 
-module.exports = {
+function decode(expr) {
+    const binaryLetters = [];
+    let decodedString = '';
+
+    for(i = 0; i < expr.length; i += 10){
+        let subString = expr.slice(i, i + 10);
+        binaryLetters.push(subString);       
+    }
+
+    for(i = 0; i < binaryLetters.length;i += 1){
+        let l = binaryLetters[i]; //создаем переменную для хранения текущего элемента массива по индексу i
+        let decodedSymbol = ''; //создаем переменную для хранения последовательности точек и тире
+        if (l[0] === '*'){ //если элемент массива начинается с * к декодед стригр прибавляем пробел
+            decodedString += ' ';
+        }else{ 
+            let trimmed = Number(l) + ''; // создаем переменную триммед для хранения строки с отсеченными нулями. Преобразовали строку в число (при преобразовании в число, нули отсекаются), затем преобразовали обратно в строку 
+            for(j = 0; j < trimmed.length;j += 2){ // создаем цикл в котором обходим строку с интервалом в 2 символа.
+                let char = trimmed.slice(j, j+2) // создаем переменную чар, в которой мы нарезаем строку от J до J+2, что позволит нам рзаделить строку на 10 и 11
+                decodedSymbol += fakeBinary[char]; //берем из словаря fakeBinary (является объектом) значение соотвествующее полученому числу в переменной char
+            } 
+            decodedString += MORSE_TABLE[decodedSymbol];
+
+        }
+    }
+    return decodedString;
+}
+
+ module.exports = {
     decode
 }
